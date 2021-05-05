@@ -40,6 +40,7 @@ import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import kotlinx.android.synthetic.main.fragment_select_location.*
 import org.koin.android.ext.android.inject
+import java.lang.Exception
 
 class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 
@@ -91,8 +92,11 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     override fun onMapReady(map: GoogleMap?) {
         mapFragment = map!!
 
-        getUserCurrentLocation()
 //        TODO: add style to the map [[DONE]]
+        setMapStyle(mapFragment)
+
+        getUserCurrentLocation()
+
         mapFragment.apply {
             mapType = GoogleMap.MAP_TYPE_NORMAL
             moveCamera(CameraUpdateFactory.zoomTo(0f))
@@ -101,6 +105,13 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         }
 
         setPoiClick(mapFragment)
+    }
+
+    private fun setMapStyle(map: GoogleMap){
+        try {
+            map.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style))
+
+        } catch (e: Exception) {}
     }
 
     private fun setPoiClick(map: GoogleMap){
