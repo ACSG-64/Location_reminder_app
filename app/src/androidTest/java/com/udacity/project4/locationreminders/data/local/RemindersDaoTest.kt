@@ -88,6 +88,6 @@ class RemindersDaoTest {
         // WHEN a non-existent id is queried
         val result = roomDatabase.reminderDao().getReminderById("911")
         // THEN the results is a null value
-        assertThat(result, nullValue())
+        assertThat(result, `is`(nullValue()))
     }
 }

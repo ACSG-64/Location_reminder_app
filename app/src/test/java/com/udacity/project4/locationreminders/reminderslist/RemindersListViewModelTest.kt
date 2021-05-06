@@ -42,7 +42,7 @@ class RemindersListViewModelTest {
     @Before
     fun setup() {
         stopKoin()
-        val remindersList = mutableListOf<ReminderDTO>(
+        val remindersToAdd = mutableListOf<ReminderDTO>(
             ReminderDTO(
                 "Test title",
                 "A test description",
@@ -56,7 +56,7 @@ class RemindersListViewModelTest {
                 -74.61,
                 -86.54)
         )
-        fakeDataSource = FakeDataSource(remindersList)
+        fakeDataSource = FakeDataSource(remindersToAdd)
         remindersListViewModel = RemindersListViewModel(ApplicationProvider.getApplicationContext(), fakeDataSource)
     }
 

@@ -85,22 +85,30 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
 
     @Test
     fun reminderListFragment_noDataLoaded_noDataStatusDisplayed() {
+        // GIVEN an application with no saved reminders
+
+        // WHEN the ReminderList fragment is opened
         launchFragmentInContainer<ReminderListFragment>(null, R.style.AppTheme)
+
+        // THEN an indicator is displayed saying that there is no data.
 //    TODO: add testing for the error messages [[DONE]]
         onView(withId(R.id.noDataTextView)).check(matches(isDisplayed()))
     }
 
     @Test
     fun reminderListFragment_clickFAB_navigateToSaveReminderFragment() {
+        // GIVEN a navigation controller from the ragment ReminderList
         val scenario = launchFragmentInContainer<ReminderListFragment>(null, R.style.AppTheme)
         val navController = mock(NavController::class.java)
 
+        // WHEN the FAB addReminder is clicked.
         scenario.onFragment {
             Navigation.setViewNavController(it.requireView(), navController)
         }
 //    TODO: test the navigation of the fragments [[DONE]]
         onView(withId(R.id.addReminderFAB)).perform(click())
 
+        //THEN navigate to the SaveReminder fragment
         verify(navController).navigate(ReminderListFragmentDirections.toSaveReminder())
     }
 
@@ -118,7 +126,6 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
         // THEN the reminder is shown on the screen
 //    TODO: test the displayed data on the UI [[DONE]]
         onView(withText(reminder.title)).check(matches(isDisplayed()))
-        onView(withText(reminder.description)).check(matches(isDisplayed()))
         onView(withText(reminder.location)).check(matches(isDisplayed()))
     }
 

@@ -106,7 +106,7 @@ class RemindersActivityTest :
         onView(withId(R.id.reminderTitle)).check(matches(isDisplayed()))
         onView(withId(R.id.reminderDescription)).check(matches(isDisplayed()))
 
-        // Editable text fields are filled in
+        // Editable text fields are filled
         onView(withId(R.id.reminderTitle)).perform(replaceText("Very nice title"))
         onView(withId(R.id.reminderDescription)).perform(replaceText("Comprehensive description"))
 

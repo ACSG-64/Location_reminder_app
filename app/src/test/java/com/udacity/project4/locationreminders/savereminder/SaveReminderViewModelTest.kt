@@ -16,6 +16,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.core.Is
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -73,7 +74,12 @@ class SaveReminderViewModelTest {
         val result = (fakeDataSource.getReminders() as Result.Success).data
 
         // THEN the result is the same as the ReminderDataItem that was saved
-        assertThat(reminder.title, equalTo(result[0].title))
+        assertThat(reminder.id, `is`(result[0].id))
+        assertThat(reminder.title, `is`(result[0].title))
+        assertThat(reminder.description, Is.`is`(result[0].description))
+        assertThat(reminder.location, `is`(result[0].location))
+        assertThat(reminder.longitude, `is`(result[0].longitude))
+        assertThat(reminder.latitude, `is`(result[0].latitude))
     }
 
     @Test
