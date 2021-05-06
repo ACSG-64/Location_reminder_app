@@ -86,7 +86,9 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
     @Test
     fun reminderListFragment_noDataLoaded_noDataStatusDisplayed() {
         // GIVEN an application with no saved reminders
-
+        runBlocking {
+            repository.deleteAllReminders()
+        }
         // WHEN the ReminderList fragment is opened
         launchFragmentInContainer<ReminderListFragment>(null, R.style.AppTheme)
 
