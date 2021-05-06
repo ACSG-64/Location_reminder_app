@@ -99,7 +99,7 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
 
     @Test
     fun reminderListFragment_clickFAB_navigateToSaveReminderFragment() {
-        // GIVEN a navigation controller from the ragment ReminderList
+        // GIVEN a navigation controller from the fragment ReminderList
         val scenario = launchFragmentInContainer<ReminderListFragment>(null, R.style.AppTheme)
         val navController = mock(NavController::class.java)
 
