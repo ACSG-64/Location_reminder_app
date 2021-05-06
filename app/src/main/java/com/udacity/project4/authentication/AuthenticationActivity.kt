@@ -2,6 +2,7 @@ package com.udacity.project4.authentication
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +12,7 @@ import com.firebase.ui.auth.IdpResponse
 import com.google.firebase.auth.FirebaseAuth
 import com.udacity.project4.R
 import com.udacity.project4.locationreminders.RemindersActivity
+import com.udacity.project4.locationreminders.geofence.LocationUpdaterService
 import com.udacity.project4.locationreminders.reminderslist.ReminderListFragment
 import kotlinx.android.synthetic.main.activity_authentication.*
 
@@ -51,6 +53,12 @@ class AuthenticationActivity : AppCompatActivity() {
 //          TODO: a bonus is to customize the sign in flow to look nice using :
         //https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#custom-layout
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+            stopService(Intent(this, LocationUpdaterService::class.java))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
