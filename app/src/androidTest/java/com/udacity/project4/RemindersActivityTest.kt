@@ -11,6 +11,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
+import androidx.test.rule.GrantPermissionRule
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiSelector
 import com.udacity.project4.locationreminders.RemindersActivity
@@ -25,6 +26,7 @@ import com.udacity.project4.utils.EspressoIdlingResource
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -81,6 +83,13 @@ class RemindersActivityTest :
             repository.deleteAllReminders()
         }
     }
+
+    @get:Rule
+    val fineLocationPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION)
+    @get:Rule
+    val backgroundLocationPermissionRule: GrantPermissionRule? = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+    @get:Rule
+    val foregroundServiceLocationPermissionRule: GrantPermissionRule? = GrantPermissionRule.grant(android.Manifest.permission.FOREGROUND_SERVICE)
 
     @Before
     fun registerIdlingResources() {

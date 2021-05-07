@@ -19,14 +19,14 @@
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/savePOI_button"
+            app:layout_constraintBottom_toTopOf="@+id/saveSelectedLocation_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:context=".locationreminders.savereminder.selectreminderlocation.SelectLocationFragment" />
 
         <Button
-            android:id="@+id/savePOI_button"
+            android:id="@+id/saveSelectedLocation_button"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/colorAccent"

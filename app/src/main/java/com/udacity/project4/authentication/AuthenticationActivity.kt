@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.BuildConfig
@@ -45,9 +46,12 @@ class AuthenticationActivity : AppCompatActivity() {
 
 //          TODO: If the user was authenticated, send him to RemindersActivity [[DONE]]
         if(auth.currentUser != null){
-            val intent = Intent(this, RemindersActivity::class.java)
+            val intent = Intent(this, RemindersActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
             intent.putExtra("USER_ID", auth.currentUser!!.uid)
             startActivity(intent)
+            finish()
         }
 
 //          TODO: a bonus is to customize the sign in flow to look nice using :
@@ -67,12 +71,20 @@ class AuthenticationActivity : AppCompatActivity() {
         if(requestCode == Codes.SIGN_IN){
             val response = IdpResponse.fromResultIntent(data)
             if(resultCode == Activity.RESULT_OK){
-                val user = FirebaseAuth.getInstance().currentUser
-                val intent = Intent(this, RemindersActivity::class.java)
+                FirebaseAuth.getInstance().currentUser
+                val intent = Intent(this, RemindersActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                }
                 startActivity(intent)
+                finish()
             } else {
                 Log.e("AuthenticationActivity", response!!.error.toString())
             }
         }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
     }
 }

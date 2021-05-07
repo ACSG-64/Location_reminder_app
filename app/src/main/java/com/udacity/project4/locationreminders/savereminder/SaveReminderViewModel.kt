@@ -79,4 +79,8 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
         }
         return true
     }
+
+    fun snackPermissionsRequest(){
+        showSnackBarInt.value = R.string.location_required_error
+    }
 }

@@ -74,13 +74,15 @@ class ReminderListFragment : BaseFragment() {
                         .signOut(context!!)
                         .addOnCompleteListener { task ->
                             if(task.isSuccessful){
-                                startActivity(Intent(context, AuthenticationActivity::class.java))
+                                val intent = Intent(context, AuthenticationActivity::class.java).apply {
+                                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                }
+                                startActivity(intent)
                             }
                         }
             }
         }
         return super.onOptionsItemSelected(item)
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

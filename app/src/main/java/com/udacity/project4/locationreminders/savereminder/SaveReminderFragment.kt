@@ -86,29 +86,14 @@ class SaveReminderFragment : BaseFragment() {
                     }
                     addOnFailureListener { }
                 }
-            }
-            else {
-                if(Manifest.permission.ACCESS_FINE_LOCATION in permissionsToGrant &&
-                        Manifest.permission.ACCESS_BACKGROUND_LOCATION in permissionsToGrant)
-                    requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,  Manifest.permission.ACCESS_BACKGROUND_LOCATION),
-                            PermissionsCodes.REQUEST_FINE_AND_BACKGROUND_LOCATION_PERMISSION)
-
-                else if(Manifest.permission.ACCESS_FINE_LOCATION in permissionsToGrant)
-                    requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                            PermissionsCodes.REQUEST_FINE_LOCATION_PERMISSION)
-
-                else if(Manifest.permission.ACCESS_BACKGROUND_LOCATION in permissionsToGrant)
-                    requestPermissions(arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION),
-                            PermissionsCodes.REQUEST_BACKGROUND_LOCATION_PERMISSION)
-
-                if(Manifest.permission.FOREGROUND_SERVICE in permissionsToGrant)
-                    requestPermissions(arrayOf(Manifest.permission.FOREGROUND_SERVICE),
-                        PermissionsCodes.REQUEST_FOREGROUND_SERVICE_PERMISSION)
+            } else if(permissionsToGrant.isNotEmpty()){
+                requestPermissions(permissionsToGrant)
             }
         }
     }
 
     /* Permissions */
+    // Check permissions
     private fun checkPermissions() : List<String> {
         val permissionsNeeded = ArrayList<String>()
 
@@ -119,7 +104,6 @@ class SaveReminderFragment : BaseFragment() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !isForegroundServiceGranted())
             permissionsNeeded.add(Manifest.permission.FOREGROUND_SERVICE)
 
-        Log.d("PERMISSIONS", permissionsNeeded.toString())
         return permissionsNeeded
     }
 
@@ -131,6 +115,28 @@ class SaveReminderFragment : BaseFragment() {
 
     private fun isForegroundServiceGranted() =
         ContextCompat.checkSelfPermission(context!!, Manifest.permission.FOREGROUND_SERVICE) === PackageManager.PERMISSION_GRANTED
+
+   // Request permissions
+   private fun requestPermissions(permissionsToGrant: List<String>){
+       _viewModel.snackPermissionsRequest() //Message
+
+       if(Manifest.permission.ACCESS_FINE_LOCATION in permissionsToGrant &&
+               Manifest.permission.ACCESS_BACKGROUND_LOCATION in permissionsToGrant)
+           requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,  Manifest.permission.ACCESS_BACKGROUND_LOCATION),
+                   PermissionsCodes.REQUEST_FINE_AND_BACKGROUND_LOCATION_PERMISSION)
+
+       else if(Manifest.permission.ACCESS_FINE_LOCATION in permissionsToGrant)
+           requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                   PermissionsCodes.REQUEST_FINE_LOCATION_PERMISSION)
+
+       else if(Manifest.permission.ACCESS_BACKGROUND_LOCATION in permissionsToGrant)
+           requestPermissions(arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION),
+                   PermissionsCodes.REQUEST_BACKGROUND_LOCATION_PERMISSION)
+
+       if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && Manifest.permission.FOREGROUND_SERVICE in permissionsToGrant)
+           requestPermissions(arrayOf(Manifest.permission.FOREGROUND_SERVICE),
+                   PermissionsCodes.REQUEST_FOREGROUND_SERVICE_PERMISSION)
+   }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
