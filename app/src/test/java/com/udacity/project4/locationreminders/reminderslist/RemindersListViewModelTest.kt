@@ -78,9 +78,9 @@ class RemindersListViewModelTest {
 
     @Test
     fun remindersListViewModel_loadExistentReminders_sameDataAsTheDataSource() = mainCoroutineRule.runBlockingTest {
-        // GIVEN a view model without data
+        // GIVEN a view model and a data source with data
 
-        // WHEN attempting to recover data both view model and data source
+        // WHEN attempting to retrieve data both view model and data source
         remindersListViewModel.loadReminders()
         val reminderInViewModel = remindersListViewModel.remindersList.getOrAwaitValue()
         val reminderInDataSource = (fakeDataSource.getReminders() as Result.Success).data
@@ -95,13 +95,30 @@ class RemindersListViewModelTest {
     }
 
     @Test
-    fun remindersListViewModel_loadNonexistentReminders_showError() = runBlockingTest {
+    fun remindersListViewModel_loadNonexistentReminders_showNoDataStatus() = runBlockingTest {
         // GIVEN a view model without data
         fakeDataSource.deleteAllReminders()
+
         // WHEN attempting to recover data
         remindersListViewModel.loadReminders()
+
         // THEN it is shown that there is no data
         assertThat(remindersListViewModel.showNoData.getOrAwaitValue(), `is`(true))
+    }
+
+    @Test
+    fun remindersListViewModel_onErrorInDataSource_handleError() = runBlockingTest {
+        // GIVEN a data source returning an error
+        fakeDataSource.setShouldReturnError(true)
+
+        // WHEN an attempt is made to load reminders
+        remindersListViewModel.loadReminders()
+
+        // THEN a snack bar displays the error that occurred
+        assertThat(remindersListViewModel.showSnackBar.getOrAwaitValue(), `is`("An exception has occurred"))
+        // and the "no data" indicator is displayed and the loading status is false
+        assertThat(remindersListViewModel.showNoData.getOrAwaitValue(), `is`(true))
+        assertThat(remindersListViewModel.showLoading.getOrAwaitValue(), `is`(false))
     }
 
 }
