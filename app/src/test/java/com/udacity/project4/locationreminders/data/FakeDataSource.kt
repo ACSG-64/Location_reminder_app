@@ -15,12 +15,8 @@ class FakeDataSource(var reminders: MutableList<ReminderDTO>? = mutableListOf())
 
     override suspend fun getReminders(): Result<List<ReminderDTO>> {
         return when {
-            shouldReturnError -> {
-                Result.Error("An exception has occurred")
-            }
-            reminders != null -> {
-                Result.Success(ArrayList(reminders!!))
-            }
+            shouldReturnError -> Result.Error("An exception has occurred")
+            reminders != null -> Result.Success(ArrayList(reminders!!))
             else -> Result.Error("No data found")
         }
     }
@@ -33,7 +29,7 @@ class FakeDataSource(var reminders: MutableList<ReminderDTO>? = mutableListOf())
         val retrievedReminder = reminders?.find { reminder ->
             reminder.id == id
         }
-        return when{
+        return when {
             shouldReturnError -> Result.Error("An exception has occurred")
             retrievedReminder != null -> Result.Success(retrievedReminder)
             else -> Result.Error("No data found")
