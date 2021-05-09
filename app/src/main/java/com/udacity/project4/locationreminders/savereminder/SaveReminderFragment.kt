@@ -29,7 +29,7 @@ import org.koin.android.ext.android.inject
 
 class SaveReminderFragment : BaseFragment() {
 
-    private lateinit var geofencingClient : GeofencingClient
+    private lateinit var geofencingClient: GeofencingClient
     private val geofencePendingIntent: PendingIntent by lazy {
         val intent = Intent(requireContext(), GeofenceBroadcastReceiver::class.java)
         PendingIntent.getBroadcast(requireContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
@@ -59,7 +59,7 @@ class SaveReminderFragment : BaseFragment() {
         binding.selectLocation.setOnClickListener {
             //            Navigate to another fragment to get the user location
             _viewModel.navigationCommand.value =
-                NavigationCommand.To(SaveReminderFragmentDirections.actionSaveReminderFragmentToSelectLocationFragment())
+                    NavigationCommand.To(SaveReminderFragmentDirections.actionSaveReminderFragmentToSelectLocationFragment())
         }
 
         binding.saveReminder.setOnClickListener {
@@ -75,18 +75,18 @@ class SaveReminderFragment : BaseFragment() {
 //            TODO: use the user entered reminder details to:
 //             2) add a geofencing request [[DONE]]
             val permissionsToGrant = checkPermissions()
-            if(permissionsToGrant.isEmpty() && _viewModel.validateEnteredData(reminder)) {
+            if (permissionsToGrant.isEmpty() && _viewModel.validateEnteredData(reminder)) {
                 val geofence = createGeofence(reminder)
                 val geofencingRequest = geofencesRequestCreator(listOf(geofence))
                 geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent)?.run {
                     addOnSuccessListener {
                         _viewModel.validateAndSaveReminder(reminder)
-                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                             activity?.startService(Intent(activity, LocationUpdaterService::class.java))
                     }
                     addOnFailureListener { }
                 }
-            } else if(permissionsToGrant.isNotEmpty()){
+            } else if (permissionsToGrant.isNotEmpty()) {
                 requestPermissions(permissionsToGrant)
             }
         }
@@ -94,49 +94,47 @@ class SaveReminderFragment : BaseFragment() {
 
     /* Permissions */
     // Check permissions
-    private fun checkPermissions() : List<String> {
+    private fun checkPermissions(): List<String> {
         val permissionsNeeded = ArrayList<String>()
 
-        if(!isFineLocationGranted())
+        if (!isFineLocationGranted())
             permissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION)
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && !isBackgroundLocationGranted())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && !isBackgroundLocationGranted())
             permissionsNeeded.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !isForegroundServiceGranted())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !isForegroundServiceGranted())
             permissionsNeeded.add(Manifest.permission.FOREGROUND_SERVICE)
 
         return permissionsNeeded
     }
 
     private fun isFineLocationGranted() =
-        ContextCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_FINE_LOCATION) === PackageManager.PERMISSION_GRANTED
+            ContextCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_FINE_LOCATION) === PackageManager.PERMISSION_GRANTED
 
     private fun isBackgroundLocationGranted() =
-        ContextCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_BACKGROUND_LOCATION) === PackageManager.PERMISSION_GRANTED
+            ContextCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_BACKGROUND_LOCATION) === PackageManager.PERMISSION_GRANTED
 
     private fun isForegroundServiceGranted() =
-        ContextCompat.checkSelfPermission(context!!, Manifest.permission.FOREGROUND_SERVICE) === PackageManager.PERMISSION_GRANTED
+            ContextCompat.checkSelfPermission(context!!, Manifest.permission.FOREGROUND_SERVICE) === PackageManager.PERMISSION_GRANTED
 
-   // Request permissions
-   private fun requestPermissions(permissionsToGrant: List<String>){
-       _viewModel.snackPermissionsRequest() //Message
+    // Request permissions
+    private fun requestPermissions(permissionsToGrant: List<String>) {
+        _viewModel.snackPermissionsRequest() //Message
 
-       if(Manifest.permission.ACCESS_FINE_LOCATION in permissionsToGrant &&
-               Manifest.permission.ACCESS_BACKGROUND_LOCATION in permissionsToGrant)
-           requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,  Manifest.permission.ACCESS_BACKGROUND_LOCATION),
-                   PermissionsCodes.REQUEST_FINE_AND_BACKGROUND_LOCATION_PERMISSION)
+        if (Manifest.permission.ACCESS_FINE_LOCATION in permissionsToGrant &&
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION in permissionsToGrant)
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION),
+                    PermissionsCodes.REQUEST_FINE_AND_BACKGROUND_LOCATION_PERMISSION)
+        else if (Manifest.permission.ACCESS_FINE_LOCATION in permissionsToGrant)
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    PermissionsCodes.REQUEST_FINE_LOCATION_PERMISSION)
+        else if (Manifest.permission.ACCESS_BACKGROUND_LOCATION in permissionsToGrant)
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION),
+                    PermissionsCodes.REQUEST_BACKGROUND_LOCATION_PERMISSION)
 
-       else if(Manifest.permission.ACCESS_FINE_LOCATION in permissionsToGrant)
-           requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                   PermissionsCodes.REQUEST_FINE_LOCATION_PERMISSION)
-
-       else if(Manifest.permission.ACCESS_BACKGROUND_LOCATION in permissionsToGrant)
-           requestPermissions(arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION),
-                   PermissionsCodes.REQUEST_BACKGROUND_LOCATION_PERMISSION)
-
-       if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && Manifest.permission.FOREGROUND_SERVICE in permissionsToGrant)
-           requestPermissions(arrayOf(Manifest.permission.FOREGROUND_SERVICE),
-                   PermissionsCodes.REQUEST_FOREGROUND_SERVICE_PERMISSION)
-   }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && Manifest.permission.FOREGROUND_SERVICE in permissionsToGrant)
+            requestPermissions(arrayOf(Manifest.permission.FOREGROUND_SERVICE),
+                    PermissionsCodes.REQUEST_FOREGROUND_SERVICE_PERMISSION)
+    }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)

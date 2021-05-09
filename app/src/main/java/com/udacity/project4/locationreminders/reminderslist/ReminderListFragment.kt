@@ -16,12 +16,12 @@ import com.udacity.project4.utils.setup
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ReminderListFragment : BaseFragment() {
-    //use Kotlin to retrieve the ViewModel instance
+    //use Koin to retrieve the ViewModel instance
     override val _viewModel: RemindersListViewModel by viewModel()
     private lateinit var binding: FragmentRemindersBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_reminders, container, false)
+        binding = FragmentRemindersBinding.inflate(inflater, container, false)
         binding.viewModel = _viewModel
 
         setHasOptionsMenu(true)
@@ -51,9 +51,9 @@ class ReminderListFragment : BaseFragment() {
     private fun navigateToAddReminder() {
         //use the navigationCommand live data to navigate between the fragments
         _viewModel.navigationCommand.postValue(
-            NavigationCommand.To(
-                ReminderListFragmentDirections.toSaveReminder()
-            )
+                NavigationCommand.To(
+                        ReminderListFragmentDirections.toSaveReminder()
+                )
         )
     }
 
@@ -73,7 +73,7 @@ class ReminderListFragment : BaseFragment() {
                 authUI
                         .signOut(context!!)
                         .addOnCompleteListener { task ->
-                            if(task.isSuccessful){
+                            if (task.isSuccessful) {
                                 val intent = Intent(context, AuthenticationActivity::class.java).apply {
                                     flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                                 }

@@ -31,21 +31,21 @@ class AuthenticationActivity : AppCompatActivity() {
 //         TODO: Implement the create account and sign in using FirebaseUI, use sign in using email and sign in using Google [[DONE]]
         signIn_button.setOnClickListener {
             val providers = arrayListOf(
-                AuthUI.IdpConfig.EmailBuilder().build(),
-                AuthUI.IdpConfig.GoogleBuilder().build()
+                    AuthUI.IdpConfig.EmailBuilder().build(),
+                    AuthUI.IdpConfig.GoogleBuilder().build()
             )
             startActivityForResult(
-                AuthUI.getInstance()
-                .createSignInIntentBuilder()
-                .setAvailableProviders(providers)
-                .setIsSmartLockEnabled(!BuildConfig.DEBUG, true)
-                .build(),
-                Codes.SIGN_IN
+                    AuthUI.getInstance()
+                            .createSignInIntentBuilder()
+                            .setAvailableProviders(providers)
+                            .setIsSmartLockEnabled(!BuildConfig.DEBUG, true)
+                            .build(),
+                    Codes.SIGN_IN
             )
         }
 
 //          TODO: If the user was authenticated, send him to RemindersActivity [[DONE]]
-        if(auth.currentUser != null){
+        if (auth.currentUser != null) {
             val intent = Intent(this, RemindersActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             }
@@ -61,16 +61,16 @@ class AuthenticationActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
             stopService(Intent(this, LocationUpdaterService::class.java))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if(requestCode == Codes.SIGN_IN){
+        if (requestCode == Codes.SIGN_IN) {
             val response = IdpResponse.fromResultIntent(data)
-            if(resultCode == Activity.RESULT_OK){
+            if (resultCode == Activity.RESULT_OK) {
                 FirebaseAuth.getInstance().currentUser
                 val intent = Intent(this, RemindersActivity::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
