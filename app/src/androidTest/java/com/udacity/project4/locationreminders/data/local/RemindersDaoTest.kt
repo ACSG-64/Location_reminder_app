@@ -50,10 +50,10 @@ class RemindersDaoTest {
             -86.54)
         roomDatabase.reminderDao().saveReminder(reminder)
 
-        // THEN the retrieved data is the same as the inserted data
+        // WHEN the retrieved data is the same as the inserted data
         val result = roomDatabase.reminderDao().getReminderById(reminder.id) as ReminderDTO
 
-        // THEN - The loaded data contains the expected values.
+        // THEN the loaded data contains the expected values.
         assertThat<ReminderDTO>(result, notNullValue())
         assertThat(result.id, `is`(reminder.id))
         assertThat(result.title, `is`(reminder.title))
